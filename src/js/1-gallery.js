@@ -1,3 +1,28 @@
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+
+const galleryContainer = document.querySelector('.gallery');
+
+const createGalleryItem = ({ preview, original, description }) => {
+  const galleryItem = document.createElement('li');
+  galleryItem.classList.add('gallery-item');
+
+  const link = document.createElement('a');
+  link.classList.add('gallery-link');
+  link.href = original;
+
+  const image = document.createElement('img');
+  image.classList.add('gallery-image');
+  image.src = preview;
+  image.dataset.source = original;
+  image.alt = description;
+
+  link.appendChild(image);
+  galleryItem.appendChild(link);
+
+  return galleryItem;
+};
+
 const images = [
   {
     preview:
@@ -63,37 +88,26 @@ const images = [
     description: 'Lighthouse Coast Sea',
   },
 ];
-// var lightbox = new SimpleLightbox('.gallery a', {
-//   /* options */
-// });
-const galleryContainer = document.querySelector('.gallery');
-
-const createGalleryItem = ({ preview, original, description }) => {
-  const galleryItem = document.createElement('li');
-  galleryItem.classList.add('gallery-item');
-
-  const link = document.createElement('a');
-  link.classList.add('gallery-link');
-  link.href = original;
-
-  const image = document.createElement('img');
-  image.classList.add('gallery-image');
-  image.src = preview;
-  image.dataset.source = original;
-  image.alt = description;
-
-  link.appendChild(image);
-  galleryItem.appendChild(link);
-
-  return galleryItem;
-};
 
 const galleryItems = images.map(createGalleryItem);
 galleryContainer.append(...galleryItems);
 
-document.addEventListener('DOMContentLoaded', function () {
-  const gallery = new SimpleLightbox('.gallery a', {});
+const gallery = new SimpleLightbox('.gallery a', {});
+
+gallery.on('show.simplelightbox', event => {
+  setTimeout(() => {
+    if (event.simpleLightboxContent) {
+      const altTextElement = document.createElement('div');
+      altTextElement.classList.add('alt-text');
+      altTextElement.textContent = event.target.alt;
+      event.simpleLightboxContent.appendChild(altTextElement);
+    }
+  }, 250);
 });
 
-import SimpleLightbox from 'simplelightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
+gallery.on('close.simplelightbox', () => {
+  const altTextElements = document.querySelectorAll('.alt-text');
+  altTextElements.forEach(element => {
+    element.parentNode.removeChild(element);
+  });
+});
