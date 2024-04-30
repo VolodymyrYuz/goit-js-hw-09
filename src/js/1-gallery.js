@@ -92,22 +92,7 @@ const images = [
 const galleryItems = images.map(createGalleryItem);
 galleryContainer.append(...galleryItems);
 
-const gallery = new SimpleLightbox('.gallery a', {});
-
-gallery.on('show.simplelightbox', event => {
-  setTimeout(() => {
-    if (event.simpleLightboxContent) {
-      const altTextElement = document.createElement('div');
-      altTextElement.classList.add('alt-text');
-      altTextElement.textContent = event.target.alt;
-      event.simpleLightboxContent.appendChild(altTextElement);
-    }
-  }, 250);
-});
-
-gallery.on('close.simplelightbox', () => {
-  const altTextElements = document.querySelectorAll('.alt-text');
-  altTextElements.forEach(element => {
-    element.parentNode.removeChild(element);
-  });
+const gallery = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 250,
 });
